@@ -127,7 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="SimpleECS.cpp" />
+    <ClCompile Include="src\ECS.cpp" />
+    <ClCompile Include="src\SimpleECS.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\ECS.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
