@@ -8,7 +8,7 @@ namespace ECS
 	/// <summary>
 	/// A Stack using an std::vector&lt;T&gt; with a GetContainer() function to access the vector
 	/// </summary>
-	/// <typeparam name="T">The datatype to store in the vector</typeparam>
+	/// <typeparam name="T">The data type to store in the vector</typeparam>
 	template<typename T> class IdPoolStackAdapter : public std::stack<T, std::vector<T>>
 	{
 	public:
@@ -22,7 +22,7 @@ namespace ECS
 	/// <summary>
 	/// A pool of IDs that can be taken out and be put back into the pool.
 	/// </summary>
-	/// <typeparam name="T">The Datatype for the IDs (has to implement T+T, T-T, (T)0, (T)1 and T==T)</typeparam>
+	/// <typeparam name="T">The data type for the IDs (has to implement T+T, T-T, (T)0, (T)1 and T==T)</typeparam>
 	template<typename T>
 	class IdPool
 	{

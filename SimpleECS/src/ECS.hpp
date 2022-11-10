@@ -25,7 +25,7 @@ namespace ECS
 	}
 
 	/// <summary>
-	/// A wrapper for Entity IDs (type: EntityType) to make entity-related functions more accessable
+	/// A wrapper for Entity IDs (type: EntityType) to make entity-related functions more accessible
 	/// </summary>
 	class Entity
 	{
