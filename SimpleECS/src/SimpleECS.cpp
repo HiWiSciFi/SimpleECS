@@ -24,14 +24,10 @@ public:
         }
     }
 };
-#include <typeindex>
-#include <typeinfo>
+
 int main()
 {
     std::cout << "Hello World!\n";
-
-    printf("Size of type_info: %zu\n", sizeof(std::type_index));
-
 
     ECS::RegisterComponent<Transform>();
     auto gravity = ECS::RegisterSystem<Gravity>();
@@ -43,9 +39,10 @@ int main()
         for (int i = 0; i < 1024; i++)
         {
             ECS::Entity e = ECS::CreateEntity();
-            e.AddComponent<Transform>();
+            //e.AddComponent<Transform>();
         }
         for (ECS::Entity e : gravity->entities) ECS::DestroyEntity(e);
+        while(0);
     }
 
     float setupTime = std::chrono::duration<float, std::chrono::milliseconds::period>(

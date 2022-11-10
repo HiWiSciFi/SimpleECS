@@ -14,6 +14,11 @@ namespace ECS
 	{
 	public:
 		virtual ~ComponentContainer() = default;
+
+		virtual void Insert(EntityType e) = 0;
+		virtual void Erase(EntityType e) = 0;
+		virtual bool HasStored(EntityType e) = 0;
+		virtual size_t GetEntities(EntityType* buffer) = 0;
 	};
 
 	/// <summary>
@@ -45,12 +50,22 @@ namespace ECS
 		}
 
 		/// <summary>
+		/// Store a new component
+		/// </summary>
+		/// <param name="e">The entity to add the component for</param>
+		virtual void Insert(EntityType e) override
+		{
+			Insert(e, T{ });
+		}
+
+		/// <summary>
 		/// Removes the component stored for a specific entity
 		/// </summary>
 		/// <param name="e">The entity the component has been stored for</param>
-		void Erase(EntityType e)
+		virtual void Erase(EntityType e) override
 		{
-			size_t index = entityToIndexMap[e];
+			size_t index;
+			try { index = entityToIndexMap.at(e); } catch (...) { return; }
 			componentArray[index] = componentArray.back();
 			entityToIndexMap.erase(e);
 			indexToEntityMap.erase(index);
@@ -72,7 +87,7 @@ namespace ECS
 		/// </summary>
 		/// <param name="e">The entity whose component to find</param>
 		/// <returns>true if there is a component stored for the entity, false otherwise</returns>
-		bool HasStored(EntityType e)
+		virtual bool HasStored(EntityType e) override
 		{
 			return entityToIndexMap.find(e) != entityToIndexMap.end();
 		}
@@ -82,9 +97,9 @@ namespace ECS
 		/// </summary>
 		/// <param name="buffer">The buffer to write to or NULL/nullptr</param>
 		/// <returns>Amount of entities</returns>
-		size_t GetEntities(EntityType* buffer)
+		virtual size_t GetEntities(EntityType* buffer) override
 		{
-			if (buffer == nullptr || buffer == NULL) return entityToIndexMap.count();
+			if (buffer == nullptr || buffer == NULL) return entityToIndexMap.size();
 			size_t i = 0;
 			for (auto const& pair : entityToIndexMap)
 			{

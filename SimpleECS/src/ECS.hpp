@@ -5,6 +5,7 @@
 #include <typeindex>
 #include <typeinfo>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "ComponentContainer.hpp"
 #include "IdPool.hpp"
@@ -107,8 +108,34 @@ namespace ECS
 		{
 			return GetComponentStore<T>()->Get(id);
 		}
+
+		bool operator==(const Entity& other) const { return id == other.id; }
+		bool operator>(const Entity& other) const { return id > other.id; }
+		bool operator<(const Entity& other) const { return id < other.id; }
+		void operator++() { ++id; }
+		void operator++(int) { ++id; }
+		void operator--() { --id; }
+		void operator--(int) { --id; }
 	};
 
+}
+
+// This needs to be exactly at this position in code because it has to be
+// specified before first use (see ECS::System.entities) and after Entity definition.
+// Template specification for Entity hashing:
+template<>
+struct std::hash<ECS::Entity>
+{
+public:
+	auto operator()(const ECS::Entity& entity) const -> size_t
+	{
+		return hash<ECS::EntityType>()(entity.GetId());
+	}
+};
+// End hashing
+
+namespace ECS
+{
 	/// <summary>
 	/// Superclass for all Systems to be used by the ECS
 	/// </summary>
@@ -119,7 +146,7 @@ namespace ECS
 		/// <summary>
 		/// Set of components that need to be present for an entity to be handled by this system
 		/// </summary>
-		std::set<std::type_index> requirements{ };
+		std::unordered_set<std::type_index> requirements{ };
 
 		/// <summary>
 		/// Sets a component requirement for this system
@@ -136,13 +163,13 @@ namespace ECS
 		/// <summary>
 		/// All entities that are relevant to the system
 		/// </summary>
-		std::set<Entity> entities;
+		std::unordered_set<Entity> entities;
 
 		/// <summary>
 		/// Get the requirements of the system
 		/// </summary>
 		/// <returns>A set of std::type_index containing all required types</returns>
-		const std::set<std::type_index>& GetRequirements() const
+		const std::unordered_set<std::type_index>& GetRequirements() const
 		{
 			return requirements;
 		}
@@ -187,5 +214,6 @@ namespace ECS
 	void DestroyEntity(Entity e)
 	{
 		idPool.Free(e.GetId());
+		//for (auto const& cs : componentStores) { cs.second->Erase(e); }
 	}
 }
