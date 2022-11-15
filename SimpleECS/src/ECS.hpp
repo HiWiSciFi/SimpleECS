@@ -214,6 +214,9 @@ namespace ECS
 	void DestroyEntity(Entity e)
 	{
 		idPool.Free(e.GetId());
-		//for (auto const& cs : componentStores) { cs.second->Erase(e); }
+		for (auto const& cs : componentStores)
+		{
+			cs.second->Erase(e);
+		}
 	}
 }

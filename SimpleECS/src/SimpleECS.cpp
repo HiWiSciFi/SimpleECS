@@ -19,8 +19,8 @@ public:
     {
         for (auto& e : entities)
         {
-            Transform& transform = e.GetComponent<Transform>();
-            transform.y -= 1.0f * dt;
+            //Transform& transform = e.GetComponent<Transform>();
+            //transform.y -= 1.0f * dt;
         }
     }
 };
@@ -38,8 +38,8 @@ int main()
     {
         for (int i = 0; i < 1024; i++)
         {
-            ECS::Entity e = ECS::CreateEntity();
-            //e.AddComponent<Transform>();
+             ECS::Entity e = ECS::CreateEntity();
+            e.AddComponent<Transform>();
         }
         for (ECS::Entity e : gravity->entities) ECS::DestroyEntity(e);
         while(0);
@@ -50,11 +50,13 @@ int main()
     fprintf(stdout, "Setup time: %fms\n", setupTime);
 
     float dt = 0.0f;
-    while (true)
+    while (0)
     {
         startTime = std::chrono::high_resolution_clock::now();
         gravity->Update(dt);
         dt = std::chrono::duration<float, std::chrono::seconds::period>(
             std::chrono::high_resolution_clock::now() - startTime).count();
+        printf("Loop\n");
     }
+    printf("End\n");
 }

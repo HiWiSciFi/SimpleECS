@@ -64,8 +64,8 @@ namespace ECS
 		/// <param name="e">The entity the component has been stored for</param>
 		virtual void Erase(EntityType e) override
 		{
-			size_t index;
-			try { index = entityToIndexMap.at(e); } catch (...) { return; }
+			if (entityToIndexMap.find(e) == entityToIndexMap.end()) return;
+			size_t index = entityToIndexMap.at(e);
 			componentArray[index] = componentArray.back();
 			entityToIndexMap.erase(e);
 			indexToEntityMap.erase(index);
