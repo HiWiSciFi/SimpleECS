@@ -218,5 +218,9 @@ namespace ECS
 		{
 			cs.second->Erase(e);
 		}
+		for (auto const& system : systems)
+		{
+			system.second->entities.erase(e);
+		}
 	}
 }

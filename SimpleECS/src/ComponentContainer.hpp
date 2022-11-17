@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include <vector>
 
+#define COMPONENT_USE_SINGLE_MAP
+
 namespace ECS
 {
 	using EntityType = size_t;
@@ -31,7 +33,9 @@ namespace ECS
 	private:
 		std::vector<T> componentArray{ };
 		std::unordered_map<EntityType, size_t> entityToIndexMap{ };
+		#ifndef COMPONENT_USE_SINGLE_MAP
 		std::unordered_map<size_t, EntityType> indexToEntityMap{ };
+		#endif
 
 	public:
 		ComponentStore() = default;
@@ -45,8 +49,10 @@ namespace ECS
 		{
 			size_t index = componentArray.size();
 			componentArray.push_back(component);
-			entityToIndexMap[e] = index;
-			indexToEntityMap[index] = e;
+			entityToIndexMap.insert({ e, index });
+			#ifndef COMPONENT_USE_SINGLE_MAP
+			indexToEntityMap.insert({ index, e });
+			#endif
 		}
 
 		/// <summary>
@@ -55,7 +61,7 @@ namespace ECS
 		/// <param name="e">The entity to add the component for</param>
 		virtual void Insert(EntityType e) override
 		{
-			Insert(e, T{ });
+			this->Insert(e, T{ });
 		}
 
 		/// <summary>
@@ -67,9 +73,18 @@ namespace ECS
 			if (entityToIndexMap.find(e) == entityToIndexMap.end()) return;
 			size_t index = entityToIndexMap.at(e);
 			componentArray[index] = componentArray.back();
-			entityToIndexMap.erase(e);
-			indexToEntityMap.erase(index);
 			componentArray.pop_back();
+
+			#ifdef COMPONENT_USE_SINGLE_MAP
+			for (auto& element : entityToIndexMap)
+			{
+				if (element.second == componentArray.size()) element.second = index;
+			}
+			#endif
+			entityToIndexMap.erase(e);
+			#ifndef COMPONENT_USE_SINGLE_MAP
+			indexToEntityMap.erase(index);
+			#endif
 		}
 
 		/// <summary>

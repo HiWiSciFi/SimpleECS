@@ -41,7 +41,7 @@ int main()
              ECS::Entity e = ECS::CreateEntity();
             e.AddComponent<Transform>();
         }
-        for (ECS::Entity e : gravity->entities) ECS::DestroyEntity(e);
+        for (size_t i = 0; i < 1024; i++) ECS::DestroyEntity(i);
         while(0);
     }
 
